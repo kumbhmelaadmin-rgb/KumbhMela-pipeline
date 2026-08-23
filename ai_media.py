@@ -12,8 +12,9 @@ from config import VIDEO_WIDTH, VIDEO_HEIGHT
 
 POLLINATIONS_IMAGE_URL = "https://image.pollinations.ai/prompt/{prompt}"
 
-# A clear, natural-sounding free voice. Full list: `edge-tts --list-voices`
-TTS_VOICE = "en-US-AriaNeural"
+# A clear, natural-sounding free Hindi male voice.
+# Full list: `edge-tts --list-voices` (other good options: hi-IN-MadhurNeural)
+TTS_VOICE = "hi-IN-MadhurNeural"
 
 
 _HEADERS = {
@@ -24,12 +25,19 @@ _HEADERS = {
     "Referer": "https://github.com/kumbhmela-pipeline",
 }
 
+# Fetch images at a higher resolution than the final video canvas, then
+# downscale during video assembly - this supersampling makes the final
+# result noticeably sharper/HD-looking versus fetching at exact output size.
+IMAGE_FETCH_WIDTH = int(VIDEO_WIDTH * 1.5)
+IMAGE_FETCH_HEIGHT = int(VIDEO_HEIGHT * 1.5)
+
 
 def fetch_ai_image(prompt: str, out_path: str, seed: int | None = None) -> None:
     """Download one AI-generated image for the given prompt (free, no API key)."""
-    encoded = urllib.parse.quote(prompt)
+    quality_suffix = ", highly detailed, sharp focus, professional photography, 4k"
+    encoded = urllib.parse.quote(prompt + quality_suffix)
     url = POLLINATIONS_IMAGE_URL.format(prompt=encoded)
-    url += f"?width={VIDEO_WIDTH}&height={VIDEO_HEIGHT}&nologo=true"
+    url += f"?width={IMAGE_FETCH_WIDTH}&height={IMAGE_FETCH_HEIGHT}&nologo=true&enhance=true"
     if seed is not None:
         url += f"&seed={seed}"
     req = urllib.request.Request(url, headers=_HEADERS)
