@@ -16,6 +16,15 @@ POLLINATIONS_IMAGE_URL = "https://image.pollinations.ai/prompt/{prompt}"
 TTS_VOICE = "en-US-AriaNeural"
 
 
+_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+    ),
+    "Referer": "https://github.com/kumbhmela-pipeline",
+}
+
+
 def fetch_ai_image(prompt: str, out_path: str, seed: int | None = None) -> None:
     """Download one AI-generated image for the given prompt (free, no API key)."""
     encoded = urllib.parse.quote(prompt)
@@ -23,7 +32,9 @@ def fetch_ai_image(prompt: str, out_path: str, seed: int | None = None) -> None:
     url += f"?width={VIDEO_WIDTH}&height={VIDEO_HEIGHT}&nologo=true"
     if seed is not None:
         url += f"&seed={seed}"
-    urllib.request.urlretrieve(url, out_path)
+    req = urllib.request.Request(url, headers=_HEADERS)
+    with urllib.request.urlopen(req, timeout=90) as resp, open(out_path, "wb") as f:
+        f.write(resp.read())
 
 
 async def _tts(text: str, out_path: str) -> None:
