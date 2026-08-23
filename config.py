@@ -1,11 +1,11 @@
 """
 Central config for the Kumbh Mela content pipeline.
 Edit TOPIC_SEEDS any time to steer what the AI talks about.
+Content is written in Hindi (Devanagari) for the voiceover/script.
 """
 
-# Seed themes. The script-writer AI picks one at random each run and
-# is told to find a FRESH, SPECIFIC angle within it (so you don't get
-# the same video twice even if the same seed comes up again).
+# Seed themes (kept in English internally as stable keys; the actual
+# script/voiceover text is Hindi - see TOPIC_FACTS_HI below).
 TOPIC_SEEDS = [
     "the history and origin of Kumbh Mela",
     "the mythology of Samudra Manthan and how it connects to Kumbh Mela",
@@ -24,91 +24,122 @@ TOPIC_SEEDS = [
     "a myth-busting fact about Kumbh Mela most people get wrong",
 ]
 
-# Backup fact bank used to LOCALLY write a script if the free AI text API
-# is unavailable or changes its terms again (keeps the pipeline 100% free
-# and never dependent on a single third party staying free forever).
+# Hindi on-screen titles per seed.
+TOPIC_TITLES_HI = {
+    "the history and origin of Kumbh Mela": "कुंभ मेले की उत्पत्ति",
+    "the mythology of Samudra Manthan and how it connects to Kumbh Mela": "समुद्र मंथन की कथा",
+    "the four Kumbh Mela locations: Prayagraj, Haridwar, Ujjain, Nashik": "कुंभ के चार पवित्र स्थान",
+    "Naga Sadhus - who they are and their way of life": "नागा साधु कौन हैं?",
+    "the Akharas (monastic orders) of Kumbh Mela": "कुंभ के अखाड़े",
+    "Shahi Snan (the royal bath) - what it is and why it matters": "शाही स्नान का महत्व",
+    "how Kumbh Mela became a UNESCO Intangible Cultural Heritage": "यूनेस्को धरोहर बना कुंभ",
+    "the scale of Kumbh Mela - crowd numbers, logistics, temporary city facts": "कुंभ मेले का विशाल स्तर",
+    "spiritual significance of bathing in the Ganga during Kumbh": "गंगा स्नान का आध्यात्मिक महत्व",
+    "lesser-known rituals and traditions at Kumbh Mela": "कुंभ की अनसुनी परंपराएं",
+    "food and langar (community kitchen) culture at Kumbh Mela": "कुंभ का लंगर",
+    "how astrology (planetary positions) decides the Kumbh Mela dates": "ज्योतिष कैसे तय करता है तारीख",
+    "a short devotional/inspirational message tied to Kumbh Mela values": "कुंभ का संदेश",
+    "safety and travel tips for pilgrims visiting Kumbh Mela": "सुरक्षा और यात्रा टिप्स",
+    "a myth-busting fact about Kumbh Mela most people get wrong": "कुंभ मेले का एक मिथक",
+}
+
+# Backup fact bank (Hindi) used to LOCALLY write a script if the free AI
+# text API is unavailable or changes its terms again (keeps the pipeline
+# 100% free and never dependent on a single third party staying free).
 TOPIC_FACTS = {
     "the history and origin of Kumbh Mela": [
-        "Kumbh Mela's roots trace back over a thousand years, linked to the legend of the gods and demons fighting over a pot of nectar of immortality.",
-        "Drops of that nectar are believed to have fallen at four places on Earth - Prayagraj, Haridwar, Ujjain, and Nashik - which is why the festival rotates between them.",
-        "Adi Shankaracharya, the 8th-century philosopher, is often credited with organizing the gatherings of monks into the structured festival we recognize today.",
+        "कुंभ मेले की जड़ें हजार साल से भी पुरानी हैं, जो देवताओं और असुरों के बीच अमृत कलश के लिए हुए संघर्ष की कथा से जुड़ी हैं।",
+        "माना जाता है कि उस अमृत की कुछ बूंदें धरती पर चार जगहों पर गिरीं - प्रयागराज, हरिद्वार, उज्जैन और नासिक - इसीलिए यह मेला इन्हीं चार स्थानों के बीच घूमता है।",
+        "आठवीं सदी के महान दार्शनिक आदि शंकराचार्य को अक्सर संतों के इन जमावड़ों को एक संगठित पर्व का रूप देने का श्रेय दिया जाता है।",
     ],
     "the mythology of Samudra Manthan and how it connects to Kumbh Mela": [
-        "The Samudra Manthan is the story of gods and demons churning the cosmic ocean together to obtain Amrita, the nectar of immortality.",
-        "As the pot of nectar was carried away, drops are said to have spilled at four earthly locations - the very sites where Kumbh Mela is held today.",
-        "This is why devotees believe bathing at these sites during Kumbh carries the same purifying power as that mythical nectar.",
+        "समुद्र मंथन की कथा देवताओं और असुरों द्वारा मिलकर अमृत पाने के लिए समुद्र मंथन करने की कहानी है।",
+        "जब अमृत कलश ले जाया जा रहा था, तो कुछ बूंदें धरती की चार जगहों पर गिरीं - वही स्थान जहां आज कुंभ मेला आयोजित होता है।",
+        "इसीलिए भक्तों का मानना है कि इन स्थानों पर स्नान करना उसी अमृत जैसा पवित्र प्रभाव रखता है।",
     ],
     "the four Kumbh Mela locations: Prayagraj, Haridwar, Ujjain, Nashik": [
-        "Kumbh Mela rotates between four sacred rivers: the Ganga at Prayagraj and Haridwar, the Shipra at Ujjain, and the Godavari at Nashik.",
-        "Each location hosts the full Kumbh roughly once every 12 years, meaning any single site sees it only a handful of times in a lifetime.",
-        "Prayagraj's Kumbh is considered the largest, held at the sacred Sangam - the confluence of the Ganga, Yamuna, and the mythical Saraswati river.",
+        "कुंभ मेला चार पवित्र नदियों के तट पर बारी-बारी से आयोजित होता है - प्रयागराज और हरिद्वार में गंगा, उज्जैन में शिप्रा, और नासिक में गोदावरी।",
+        "हर स्थान पर पूर्ण कुंभ लगभग हर बारह साल में एक बार आता है, यानी एक जीवनकाल में कोई इसे मुश्किल से कुछ ही बार देख पाता है।",
+        "प्रयागराज का कुंभ सबसे बड़ा माना जाता है, जो संगम पर होता है - गंगा, यमुना और पौराणिक सरस्वती नदी के मिलन स्थल पर।",
     ],
     "Naga Sadhus - who they are and their way of life": [
-        "Naga Sadhus are warrior-ascetics who renounce all worldly possessions, including clothing, as a mark of complete detachment from material life.",
-        "Becoming a Naga Sadhu can take over a decade of rigorous training, meditation, and tests of endurance under a guru.",
-        "They are famous for leading the Shahi Snan, the royal procession into the river, at every Kumbh Mela.",
+        "नागा साधु ऐसे योद्धा-तपस्वी होते हैं जो सांसारिक मोह त्यागकर वस्त्र तक का त्याग कर देते हैं, यह पूर्ण वैराग्य का प्रतीक है।",
+        "नागा साधु बनने में अक्सर एक दशक से भी ज्यादा समय लगता है - गुरु के मार्गदर्शन में कठोर साधना और अनुशासन से गुजरना पड़ता है।",
+        "हर कुंभ मेले में शाही स्नान का नेतृत्व यही नागा साधु करते हैं।",
     ],
     "the Akharas (monastic orders) of Kumbh Mela": [
-        "Akharas are centuries-old monastic orders of Hindu ascetics, each with its own traditions, deities, and hierarchy.",
-        "There are 13 major Akharas recognized today, some tracing their founding back to the 8th century.",
-        "At Kumbh Mela, Akharas set up massive camps and lead the ceremonial processions in a strict, ancient order of precedence.",
+        "अखाड़े सदियों पुराने साधु-संतों के संगठित समूह हैं, हर एक की अपनी परंपरा, आराध्य देवता और पदानुक्रम होता है।",
+        "आज तेरह प्रमुख अखाड़े मान्यता प्राप्त हैं, जिनमें से कुछ की स्थापना आठवीं सदी तक जाती है।",
+        "कुंभ मेले में अखाड़े विशाल शिविर लगाते हैं और एक तय क्रम में भव्य शोभायात्रा निकालते हैं।",
     ],
     "Shahi Snan (the royal bath) - what it is and why it matters": [
-        "Shahi Snan, or the 'royal bath,' is the most sacred ritual bathing event of Kumbh Mela, timed to precise astrological moments.",
-        "Naga Sadhus and Akhara leaders bathe first in a grand procession, followed by millions of pilgrims believed to gain the same spiritual merit.",
-        "The specific auspicious dates are calculated using planetary positions months or years in advance.",
+        "शाही स्नान कुंभ मेले का सबसे पवित्र स्नान अनुष्ठान है, जिसका समय ज्योतिषीय गणना से तय किया जाता है।",
+        "सबसे पहले नागा साधु और अखाड़ों के प्रमुख स्नान करते हैं, उसके बाद करोड़ों श्रद्धालु उसी पुण्य की आशा में स्नान करते हैं।",
+        "इसकी शुभ तिथियां ग्रहों की स्थिति के आधार पर महीनों या सालों पहले तय कर ली जाती हैं।",
     ],
     "how Kumbh Mela became a UNESCO Intangible Cultural Heritage": [
-        "UNESCO added Kumbh Mela to its Representative List of the Intangible Cultural Heritage of Humanity in 2017.",
-        "It was recognized for its scale, diversity of ritual practice, and its role in fostering a sense of universal brotherhood among pilgrims.",
-        "UNESCO specifically noted the festival's peaceful coexistence of so many different monastic and devotional traditions in one place.",
+        "2017 में यूनेस्को ने कुंभ मेले को मानवता की अमूर्त सांस्कृतिक धरोहर की सूची में शामिल किया।",
+        "इसे इसके विशाल स्तर, विविध अनुष्ठानों और श्रद्धालुओं के बीच सार्वभौमिक भाईचारे को बढ़ावा देने के लिए मान्यता दी गई।",
+        "यूनेस्को ने खासतौर पर इस बात को सराहा कि यहां इतनी अलग-अलग साधु परंपराएं शांति से एक साथ मौजूद रहती हैं।",
     ],
     "the scale of Kumbh Mela - crowd numbers, logistics, temporary city facts": [
-        "Kumbh Mela is considered the largest peaceful gathering of human beings on the planet, with past events drawing over 100 million visitors across the festival period.",
-        "A temporary city is built from scratch for the event, complete with roads, bridges, hospitals, and its own police force.",
-        "On the single biggest bathing day, tens of millions of people can gather at the riverbanks within just a few hours.",
+        "कुंभ मेला पृथ्वी पर मनुष्यों का सबसे बड़ा शांतिपूर्ण जमावड़ा माना जाता है, जिसमें पिछले आयोजनों में दस करोड़ से भी ज्यादा लोग शामिल हुए।",
+        "इस आयोजन के लिए शुरू से एक अस्थायी शहर बसाया जाता है - सड़कें, पुल, अस्पताल और अपनी खुद की पुलिस व्यवस्था के साथ।",
+        "सबसे बड़े स्नान वाले दिन, कुछ ही घंटों में करोड़ों लोग नदी किनारे इकट्ठा हो सकते हैं।",
     ],
     "spiritual significance of bathing in the Ganga during Kumbh": [
-        "Bathing in the Ganga during Kumbh Mela is believed to wash away sins accumulated over many lifetimes.",
-        "Pilgrims travel from across India and the world specifically to bathe at the exact astrologically auspicious moment.",
-        "For many, it isn't just a ritual - it's considered a once-in-a-lifetime opportunity for spiritual liberation, or moksha.",
+        "माना जाता है कि कुंभ मेले के दौरान गंगा में स्नान करने से जन्मों-जन्मों के पाप धुल जाते हैं।",
+        "श्रद्धालु सिर्फ उसी शुभ क्षण में स्नान करने के लिए देश-विदेश से यात्रा करके आते हैं।",
+        "कई लोगों के लिए यह सिर्फ एक रस्म नहीं, बल्कि मोक्ष पाने का एक अनमोल अवसर है।",
     ],
     "lesser-known rituals and traditions at Kumbh Mela": [
-        "Beyond the famous royal baths, Kumbh Mela includes days of religious discourses, devotional singing, and philosophical debates among scholars.",
-        "Many pilgrims perform Pind Daan, a ritual to honor deceased ancestors, during their visit.",
-        "Some ascetics undertake extreme, decades-long vows during Kumbh - like never sitting down, or keeping an arm raised permanently - as acts of devotion.",
+        "प्रसिद्ध शाही स्नान के अलावा, कुंभ मेले में कई दिनों तक धार्मिक प्रवचन, भजन-कीर्तन और विद्वानों के बीच शास्त्रार्थ भी होता है।",
+        "कई श्रद्धालु अपने पूर्वजों को श्रद्धांजलि देने के लिए पिंड दान की रस्म भी निभाते हैं।",
+        "कुछ साधु कुंभ के दौरान वर्षों तक चलने वाले कठिन व्रत लेते हैं - जैसे कभी न बैठना, या हमेशा एक हाथ ऊपर उठाए रखना - भक्ति के प्रतीक के रूप में।",
     ],
     "food and langar (community kitchen) culture at Kumbh Mela": [
-        "Langars, or free community kitchens, feed millions of pilgrims every single day of Kumbh Mela at no cost.",
-        "These kitchens are run entirely by volunteers and donations, reflecting the festival's spirit of selfless service.",
-        "It's considered one of the largest volunteer-run food operations anywhere in the world during the festival period.",
+        "लंगर यानी मुफ्त सामुदायिक रसोई कुंभ मेले में रोज़ाना लाखों श्रद्धालुओं को भोजन कराती है, बिना किसी शुल्क के।",
+        "ये रसोई पूरी तरह स्वयंसेवकों और दान से चलती हैं, जो इस पर्व की निःस्वार्थ सेवा भावना को दर्शाती हैं।",
+        "यह दुनिया के सबसे बड़े स्वयंसेवी भोजन अभियानों में से एक माना जाता है।",
     ],
     "how astrology (planetary positions) decides the Kumbh Mela dates": [
-        "The exact dates of Kumbh Mela are determined by the positions of the Sun, Moon, and Jupiter in specific zodiac signs.",
-        "This astrological calculation is why Kumbh Mela doesn't fall on a fixed calendar date and must be computed years in advance.",
-        "Different planetary alignments determine which of the four cities hosts the Kumbh in a given cycle.",
+        "कुंभ मेले की सटीक तारीखें सूर्य, चंद्रमा और बृहस्पति की राशियों में विशेष स्थिति के आधार पर तय होती हैं।",
+        "इसी वजह से कुंभ मेला किसी तय कैलेंडर तारीख पर नहीं आता, बल्कि इसकी गणना सालों पहले करनी पड़ती है।",
+        "अलग-अलग ग्रहों की स्थिति यह भी तय करती है कि किसी चक्र में कुंभ किस शहर में लगेगा।",
     ],
     "a short devotional/inspirational message tied to Kumbh Mela values": [
-        "Kumbh Mela is a reminder that people from every background - rich, poor, scholar, ascetic - can gather as equals in pursuit of something greater than themselves.",
-        "At its heart, the festival teaches that purification isn't just physical - it's a chance to let go of what no longer serves you.",
-        "Millions walk away from Kumbh Mela not with anything material, but with a renewed sense of purpose.",
+        "कुंभ मेला यह याद दिलाता है कि हर पृष्ठभूमि के लोग - अमीर, गरीब, विद्वान, तपस्वी - सब एक साथ, बराबरी से, कुछ बड़े उद्देश्य के लिए इकट्ठा हो सकते हैं।",
+        "इसका मूल संदेश यही है कि शुद्धि सिर्फ शरीर की नहीं, बल्कि उन चीज़ों को छोड़ने का अवसर भी है जो अब हमारे काम की नहीं रहीं।",
+        "करोड़ों लोग कुंभ मेले से कुछ भौतिक लेकर नहीं, बल्कि जीवन का एक नया उद्देश्य लेकर लौटते हैं।",
     ],
     "safety and travel tips for pilgrims visiting Kumbh Mela": [
-        "Given the enormous crowds, it's wise to fix a family meeting point in advance, since phone networks can get overloaded.",
-        "Authorities set up massive lost-and-found centers, and announcement towers, specifically to reunite separated families.",
-        "Traveling a day or two before or after the peak Shahi Snan dates can mean a similarly spiritual experience with far smaller crowds.",
+        "इतनी बड़ी भीड़ को देखते हुए, पहले से परिवार के मिलने की एक जगह तय कर लेना समझदारी है, क्योंकि फोन नेटवर्क अक्सर व्यस्त हो जाता है।",
+        "प्रशासन खोया-पाया केंद्र और अनाउंसमेंट टावर खासतौर पर बिछड़े परिवारों को मिलाने के लिए लगाता है।",
+        "मुख्य शाही स्नान की तारीखों से एक-दो दिन आगे-पीछे यात्रा करने पर भी वैसा ही आध्यात्मिक अनुभव मिल सकता है, वो भी कम भीड़ के साथ।",
     ],
     "a myth-busting fact about Kumbh Mela most people get wrong": [
-        "Many assume Kumbh Mela happens every 12 years everywhere - but a smaller 'Ardh Kumbh' (half Kumbh) is actually held every 6 years at some sites.",
-        "It's a common myth that only Hindu ascetics attend - in reality, Kumbh Mela draws visitors, researchers, and travelers of every faith and background.",
-        "Contrary to popular belief, the festival isn't one single event - it unfolds over weeks, with multiple distinct bathing dates, each astrologically significant.",
+        "बहुत से लोग सोचते हैं कि कुंभ मेला हर जगह बारह साल में आता है - लेकिन कुछ स्थानों पर हर छह साल में एक छोटा 'अर्ध कुंभ' भी आयोजित होता है।",
+        "यह भी एक आम भ्रम है कि यहां सिर्फ हिंदू तपस्वी आते हैं - असल में कुंभ मेला हर धर्म और हर जगह से आए यात्रियों और शोधकर्ताओं को आकर्षित करता है।",
+        "आम धारणा के विपरीत, यह कोई एक दिन का आयोजन नहीं है - यह हफ्तों तक चलता है, जिसमें कई अलग स्नान तिथियां होती हैं, हर एक का अपना ज्योतिषीय महत्व है।",
     ],
 }
 
+HOOKS_HI = [
+    "कुंभ मेले के बारे में एक ऐसी बात जो शायद आप नहीं जानते।",
+    "यह कुंभ मेले के सबसे दिलचस्प तथ्यों में से एक है।",
+    "शायद आपने कुंभ मेले के बारे में यह पहले कभी नहीं सुना होगा।",
+    "आइए बात करते हैं कुंभ मेले की एक अद्भुत बात की।",
+]
+
+CLOSERS_HI = [
+    "यही है कुंभ मेले की कहानी - आस्था, इतिहास और ऐसा भव्य स्तर जो दुनिया में कहीं और नहीं मिलता।",
+    "यही वजह है कि कुंभ मेला इंसानी इतिहास के सबसे असाधारण जमावड़ों में गिना जाता है।",
+    "हमारे साथ जुड़े रहिए, कुंभ मेले की और भी अनसुनी बातें जानने के लिए।",
+]
+
 HASHTAG_BANK = [
-    "#KumbhMela", "#Kumbh2027", "#SanatanDharma", "#IncredibleIndia",
-    "#HinduCulture", "#SpiritualIndia", "#Prayagraj", "#Haridwar",
-    "#GangaSnan", "#NagaSadhu", "#UNESCOHeritage", "#FaithAndFestival",
+    "#कुंभमेला", "#प्रयागराज", "#हरिद्वार", "#सनातनधर्म", "#भारतीयसंस्कृति",
+    "#आध्यात्मिकता", "#गंगा", "#नागासाधु", "#KumbhMela", "#IncredibleIndia",
 ]
 
 # Video settings
