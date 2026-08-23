@@ -4,6 +4,7 @@ Used to pick a specific angle on a topic and write a short video script.
 """
 import json
 import random
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -22,11 +23,25 @@ def _call_pollinations(prompt: str, system: str = "") -> str:
     req = urllib.request.Request(
         POLLINATIONS_TEXT_URL,
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+            ),
+            "Referer": "https://github.com/kumbhmela-pipeline",
+            "Accept": "application/json",
+        },
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        raw = resp.read().decode("utf-8", errors="ignore")
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            raw = resp.read().decode("utf-8", errors="ignore")
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="ignore")
+        raise RuntimeError(
+            f"Pollinations text API returned {e.code}: {body[:500]}"
+        ) from e
     # Pollinations sometimes returns plain text, sometimes JSON-wrapped text
     try:
         data = json.loads(raw)
