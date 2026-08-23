@@ -1,10 +1,9 @@
 """
-Script writing. Tries free AI text generation (Pollinations) first for
-variety; if that API is unavailable or its free-tier terms change again
-(it has changed more than once), it silently falls back to a local
-generator built from the curated TOPIC_FACTS bank in config.py. This way
-the pipeline never breaks and never costs anything, regardless of what a
-third-party free API does.
+Script writing, in Hindi. Tries free AI text generation (Pollinations)
+first for variety; falls back to a local generator built from the curated
+TOPIC_FACTS bank in config.py if that API is unavailable (it has changed
+terms more than once). This way the pipeline never breaks and never costs
+anything, regardless of what a third-party free API does.
 """
 import json
 import random
@@ -12,7 +11,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from config import HASHTAG_BANK, TOPIC_FACTS
+from config import CLOSERS_HI, HASHTAG_BANK, HOOKS_HI, TOPIC_FACTS, TOPIC_TITLES_HI
 
 POLLINATIONS_TEXT_URL = "https://text.pollinations.ai/"
 
@@ -58,23 +57,24 @@ def _call_pollinations(prompt: str, system: str = "") -> str:
 def _ai_pick_topic_and_write_script(topic_seeds: list[str]) -> dict:
     seed = random.choice(topic_seeds)
     system = (
-        "You are a social media scriptwriter for an Instagram/Facebook page "
-        "about Kumbh Mela (the Hindu pilgrimage festival). You write short, "
-        "engaging, factually careful video scripts for a general global "
-        "audience. Tone: fascinating, respectful, energetic. Keep facts "
-        "accurate; if unsure, keep claims general."
+        "आप कुंभ मेला (हिंदू तीर्थ पर्व) के बारे में एक इंस्टाग्राम/फेसबुक पेज के लिए "
+        "स्क्रिप्ट लिखने वाले एक कुशल हिंदी कंटेंट राइटर हैं। आप छोटी, आकर्षक, तथ्यात्मक "
+        "रूप से सही वीडियो स्क्रिप्ट पूरी तरह शुद्ध हिंदी (देवनागरी) में लिखते हैं। लहजा: "
+        "रोचक, सम्मानजनक, ऊर्जावान। तथ्यों को सही रखें; अनिश्चित होने पर सामान्य बात कहें।"
     )
     prompt = f"""
-Seed theme: "{seed}"
+विषय: "{seed}"
 
-1. Narrow the seed into ONE specific, interesting angle.
-2. Write a video voiceover script for that angle, 40-160 words, hook in the
-   first line, plain spoken sentences (read aloud by text-to-speech), no
-   emojis, no stage directions.
-3. Suggest 6-8 relevant Instagram hashtags.
-4. Suggest a short on-screen title (under 8 words).
+यह करें:
+1. इस विषय का कोई एक खास, दिलचस्प पहलू चुनें।
+2. उस पहलू पर एक वीडियो वॉइसओवर स्क्रिप्ट लिखें, पूरी तरह हिंदी (देवनागरी) में, 40-160 शब्द,
+   पहली पंक्ति में ध्यान खींचने वाली बात, सरल बोलचाल के वाक्य (टेक्स्ट-टू-स्पीच द्वारा पढ़े जाएंगे),
+   कोई इमोजी या निर्देश नहीं।
+3. 6-8 प्रासंगिक इंस्टाग्राम हैशटैग सुझाएं (हिंदी और अंग्रेज़ी मिश्रित ठीक है)।
+4. एक छोटा ऑन-स्क्रीन शीर्षक सुझाएं (8 शब्दों से कम, हिंदी में)।
 
-Respond ONLY as strict JSON with keys: angle, title, script, hashtags (array).
+केवल सख्त JSON के रूप में जवाब दें, इन keys के साथ: angle, title, script, hashtags (array)।
+angle को अंग्रेज़ी में संक्षेप में रखें, बाकी सब हिंदी में।
 """
     raw = _call_pollinations(prompt, system=system)
     start, end = raw.find("{"), raw.rfind("}")
@@ -89,27 +89,13 @@ Respond ONLY as strict JSON with keys: angle, title, script, hashtags (array).
 
 
 def _local_pick_topic_and_write_script(topic_seeds: list[str]) -> dict:
-    """Deterministic-but-varied fallback: no external calls, always works."""
+    """Deterministic-but-varied Hindi fallback: no external calls, always works."""
     seed = random.choice(topic_seeds)
-    facts = list(TOPIC_FACTS.get(seed, [f"Here's something worth knowing about {seed}."]))
+    facts = list(TOPIC_FACTS.get(seed, [f"{seed} के बारे में एक खास बात।"]))
     random.shuffle(facts)
 
-    hooks = [
-        "Here's something most people don't know about Kumbh Mela.",
-        "This is one of the most fascinating facts about Kumbh Mela.",
-        "You've probably never heard this about Kumbh Mela.",
-        "Let's talk about something incredible from Kumbh Mela.",
-    ]
-    closers = [
-        "That's the story of Kumbh Mela - faith, history, and scale like nowhere else on Earth.",
-        "It's part of why Kumbh Mela remains one of the most extraordinary gatherings in human history.",
-        "Follow along as we explore more of what makes Kumbh Mela so remarkable.",
-    ]
-
-    script = " ".join([random.choice(hooks), *facts[:3], random.choice(closers)])
-    title = seed[:1].upper() + seed[1:]
-    if len(title) > 55:
-        title = title[:52] + "..."
+    script = " ".join([random.choice(HOOKS_HI), *facts[:3], random.choice(CLOSERS_HI)])
+    title = TOPIC_TITLES_HI.get(seed, seed)
 
     tags = random.sample(HASHTAG_BANK, k=min(6, len(HASHTAG_BANK)))
     return {
@@ -124,24 +110,27 @@ def _local_pick_topic_and_write_script(topic_seeds: list[str]) -> dict:
 def pick_topic_and_write_script(topic_seeds: list[str]) -> dict:
     """
     Tries the free AI first for extra variety; falls back to a local,
-    always-available generator if the AI call fails for any reason
+    always-available Hindi generator if the AI call fails for any reason
     (network issue, API terms change, rate limit, malformed response, etc).
     """
     try:
         data = _ai_pick_topic_and_write_script(topic_seeds)
-        print("Used AI-generated script.")
+        print("Used AI-generated Hindi script.")
     except Exception as e:
-        print(f"AI text generation unavailable ({e}); using local fallback script.")
+        print(f"AI text generation unavailable ({e}); using local Hindi fallback script.")
         data = _local_pick_topic_and_write_script(topic_seeds)
 
+    # Hindi is spoken a bit slower per word on average than English TTS;
+    # ~2.0 words/sec is a safer estimate than the ~2.3 used for English.
     word_count = len(data["script"].split())
-    data["suggested_duration_sec"] = max(15, min(65, round(word_count / 2.3)))
+    data["suggested_duration_sec"] = max(15, min(65, round(word_count / 2.0)))
     return data
 
 
 def generate_image_prompts(angle: str, n: int = 4) -> list[str]:
-    """Ask the AI for n distinct visual scene descriptions; falls back to
-    generic but relevant prompts if the AI call fails."""
+    """Ask the AI for n distinct visual scene descriptions (kept in English -
+    image models respond better to English prompts); falls back to generic
+    but relevant prompts if the AI call fails."""
     system = (
         "You write concise, vivid image-generation prompts for an AI image "
         "model. Describe realistic, respectful, culturally accurate scenes "
