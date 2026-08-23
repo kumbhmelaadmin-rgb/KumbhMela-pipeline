@@ -21,8 +21,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install ffmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg imagemagick
+      - name: Install ffmpeg and Hindi (Devanagari) font support
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg imagemagick fonts-noto-core
 
       - name: Allow ImageMagick to read/write text (needed by MoviePy TextClip)
         run: |
