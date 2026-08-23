@@ -50,7 +50,7 @@ def build_video(
             title,
             fontsize=70,
             color="white",
-            font="DejaVu-Sans-Bold",
+            font="/usr/share/fonts/truetype/noto/NotoSansDevanagari-Bold.ttf",
             method="caption",
             size=(VIDEO_WIDTH - 120, None),
             stroke_color="black",
